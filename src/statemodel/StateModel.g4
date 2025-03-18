@@ -5,14 +5,17 @@ model: states transitions;
 
 // States block
 states: STATES LBRACE state+ RBRACE;
-state: INITIAL? STATE_NAME LBRACE labels RBRACE ERROR?;
-labels: (LABEL (COMMA LABEL)*)?;
+state: INITIAL? stateName LBRACE labels RBRACE ERROR?;
+stateName: STATE_NAME;
+labels: (IDENTIFIER (COMMA IDENTIFIER)*)?;
 
 // Transitions block
 transitions: TRANSITIONS LBRACE transition* RBRACE;
 transition: transScheme | transDefinition;
-transScheme: TRANS (NORMAL | ERROR) ('n1'|'n2'|'e');
-transDefinition: ('n1'|'n2'|'e') COLON STATE_NAME ARROW STATE_NAME;
+transScheme: TRANS (NORMAL | ERROR) IDENTIFIER;
+transDefinition: IDENTIFIER COLON fromState ARROW toState;
+fromState: STATE_NAME;
+toState: STATE_NAME;
 
 // Lexer rules
 STATES: 'states';
@@ -30,7 +33,7 @@ COMMA: ',';
 SEMI: ';';
 
 STATE_NAME: [A-Z][A-Z0-9]*;
-LABEL: [a-z][a-z0-9]*;
-TRANS_NAME: [a-z][a-z0-9]*;
+IDENTIFIER: [a-z][a-z0-9]*;
+
 LINE_COMMENT: '//' ~[\r\n]* -> skip;
 WS: [ \t\n\r]+ -> skip;
